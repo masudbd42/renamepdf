@@ -72,7 +72,12 @@ class PdfProcessorService
         $title = $log->clean_title ?? $log->detected_title ?? 'Untitled';
         $filename = "{$year} - {$title}.pdf";
 
+        // Ensure unique filenames to avoid overwriting when multiple PDFs share the same title/year
         $renamedPath = 'pdf_renamed/' . $filename;
+        if (Storage::exists($renamedPath)) {
+            $filename = "{$year} - {$title}_{$log->id}.pdf";
+            $renamedPath = 'pdf_renamed/' . $filename;
+        }
 
         Storage::copy($log->stored_path, $renamedPath);
         $log->update(['renamed_path' => $renamedPath]);

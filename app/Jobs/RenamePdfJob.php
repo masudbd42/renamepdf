@@ -26,8 +26,10 @@ class RenamePdfJob implements ShouldQueue
 
         $processorService->process($log);
 
-        if ($log->fresh()->status === 'completed') {
-            $processorService->rename($log->fresh());
+        $freshLog = $log->fresh();
+
+        if ($freshLog->status === 'completed') {
+            $processorService->rename($freshLog);
         }
     }
 
